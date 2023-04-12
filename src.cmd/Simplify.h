@@ -315,9 +315,24 @@ namespace Simplify
 		TEXCOORD = 4,
 		COLOR = 8
 	};
-	struct Triangle { int v[3];double err[4];int deleted,dirty,attr;vec3f n;vec3f uvs[3];int material; };
-	struct Vertex { vec3f p;int tstart,tcount;SymetricMatrix q;int border;};
-	struct Ref { int tid,tvertex; };
+	struct Triangle {
+		int v[3];
+		double err[4];
+		int deleted,dirty,attr;
+		vec3f n;
+		vec3f uvs[3];
+		vec3f colors[3];
+		int material;
+	};
+	struct Vertex {
+		vec3f p;
+		int tstart,tcount;
+		SymetricMatrix q;
+		int border;
+	};
+	struct Ref {
+		int tid,tvertex;
+	};
 	std::vector<Triangle> triangles;
 	std::vector<Vertex> vertices;
 	std::vector<Ref> refs;
@@ -330,6 +345,7 @@ namespace Simplify
 	double calculate_error(int id_v1, int id_v2, vec3f &p_result);
 	bool flipped(vec3f p,int i0,int i1,Vertex &v0,Vertex &v1,std::vector<int> &deleted);
 	void update_uvs(int i0,const Vertex &v,const vec3f &p,std::vector<int> &deleted);
+	void update_colors(int i0,const Vertex &v,const vec3f &p,std::vector<int> &deleted);
 	void update_triangles(int i0,Vertex &v,std::vector<int> &deleted,int &deleted_triangles);
 	void update_mesh(int iteration);
 	void compact_mesh();
@@ -829,7 +845,7 @@ namespace Simplify
 	}
 
 	//Option : Load OBJ
-	void load_obj(const char* filename, bool process_uv=false){
+	void load_obj(const char* filename, bool process_uv){
 		vertices.clear();
 		triangles.clear();
 		//printf ( "Loading Objects %s ... \n",filename);
